@@ -42,3 +42,6 @@ Thumbs.db
 
 # Reference backup
 _backup_reference/
+
+# Course reference materials
+ref/
