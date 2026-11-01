@@ -1,0 +1,243 @@
+[
+  {
+    "id": 1,
+    "query": "ห้องสมุดเปิดวันธรรมดากี่โมงถึงกี่โมง",
+    "expected_rule_ids": ["RULE-01"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 1 ข้อ 1.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "วันจันทร์ - วันศุกร์ เวลา 08.00 น. - 20.30 น."
+  },
+  {
+    "id": 2,
+    "query": "วันเสาร์อาทิตย์ห้องสมุดเปิดทำการไหม",
+    "expected_rule_ids": ["RULE-01"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 1 ข้อ 1.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "เปิดทำการเวลา 09.00 น. - 17.00 น."
+  },
+  {
+    "id": 3,
+    "query": "ช่วงสอบเปิดตลอด 24 ชั่วโมงไหม",
+    "expected_rule_ids": ["RULE-02"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 1 ข้อ 1.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "พื้นที่อ่านหนังสือชั้น 1 และ Co-Working Space เปิดบริการตลอด 24 ชั่วโมงในช่วงสอบ"
+  },
+  {
+    "id": 4,
+    "query": "บุคคลภายนอกเข้าห้องสมุดต้องเสียเงินเท่าไร",
+    "expected_rule_ids": ["RULE-03"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 1 ข้อ 1.3"],
+    "category": "in-domain",
+    "ground_truth_answer": "แลกบัตรประชาชนและชำระค่าธรรมเนียมวันละ 20 บาท"
+  },
+  {
+    "id": 5,
+    "query": "นักศึกษาปริญญาตรีสามารถยืมหนังสือได้กี่เล่มและยืมได้กี่วัน",
+    "expected_rule_ids": ["RULE-04"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 2 ข้อ 2.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "ยืมได้สูงสุด 10 เล่ม นาน 14 วันต่อครั้ง"
+  },
+  {
+    "id": 6,
+    "query": "นักศึกษา ป.โท ยืมหนังสือได้กี่เล่ม",
+    "expected_rule_ids": ["RULE-05"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 2 ข้อ 2.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "ยืมได้สูงสุด 20 เล่ม นาน 30 วัน"
+  },
+  {
+    "id": 7,
+    "query": "อาจารย์ยืมหนังสือได้นานสุดกี่วัน",
+    "expected_rule_ids": ["RULE-06"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 2 ข้อ 2.3"],
+    "category": "in-domain",
+    "ground_truth_answer": "ยืมได้ 30 เล่ม เป็นเวลา 90 วัน (1 ภาคการศึกษา)"
+  },
+  {
+    "id": 8,
+    "query": "หนังสือสำรองยืมได้กี่ชั่วโมง ยืมกลับบ้านข้ามคืนได้ไหม",
+    "expected_rule_ids": ["RULE-07"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 2 ข้อ 2.4"],
+    "category": "in-domain",
+    "ground_truth_answer": "ยืมได้ครั้งละไม่เกิน 2 เล่ม เป็นเวลาไม่เกิน 3 ชั่วโมง หรือยืมข้ามคืนได้หลัง 17.00 น."
+  },
+  {
+    "id": 9,
+    "query": "ยืมหนังสือต่อทางออนไลน์ได้สูงสุดกี่ครั้ง",
+    "expected_rule_ids": ["RULE-08"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 3 ข้อ 3.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "ต่ออายุออนไลน์ได้สูงสุด 2 ครั้งติดต่อกัน"
+  },
+  {
+    "id": 10,
+    "query": "ถ้ามีคนจองหนังสือเล่มนั้นไว้ เรายังกดต่ออายุ (Renew) ได้ไหม",
+    "expected_rule_ids": ["RULE-08"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 3 ข้อ 3.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "ไม่ได้ หากมีสมาชิกท่านอื่นทำการจองไว้"
+  },
+  {
+    "id": 11,
+    "query": "จองหนังสือไว้ เมื่อหนังสือมาถึงต้องไปรับภายในกี่วัน",
+    "expected_rule_ids": ["RULE-09"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 3 ข้อ 3.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "ต้องไปรับภายใน 3 วันทำการ"
+  },
+  {
+    "id": 12,
+    "query": "ส่งหนังสือทั่วไปเกินกำหนด ค่าปรับวันละกี่บาท",
+    "expected_rule_ids": ["RULE-10"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 4 ข้อ 4.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "ค่าปรับเล่มละ 5 บาท ต่อวันทำการ"
+  },
+  {
+    "id": 13,
+    "query": "เพดานค่าปรับสูงสุดของหนังสือทั่วไปไม่เกินกี่บาทต่อเล่ม",
+    "expected_rule_ids": ["RULE-10"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 4 ข้อ 4.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "สูงสุดไม่เกิน 500 บาทต่อเล่ม"
+  },
+  {
+    "id": 14,
+    "query": "หนังสือสำรองส่งช้า คิดค่าปรับยังไง",
+    "expected_rule_ids": ["RULE-11"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 4 ข้อ 4.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "เล่มละ 10 บาท ต่อชั่วโมง หรือเศษของชั่วโมง"
+  },
+  {
+    "id": 15,
+    "query": "ค้างค่าปรับเท่าไรถึงจะถูกระงับสิทธิการยืม",
+    "expected_rule_ids": ["RULE-12"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 4 ข้อ 4.3"],
+    "category": "in-domain",
+    "ground_truth_answer": "ค้างชำระสะสมตั้งแต่ 100 บาทขึ้นไป หรือค้างส่งเกิน 30 วัน"
+  },
+  {
+    "id": 16,
+    "query": "ถ้าทำหนังสือห้องสมุดหายต้องทำอย่างไรบ้าง",
+    "expected_rule_ids": ["RULE-13"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 5 ข้อ 5.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "จัดหาเล่มใหม่มาชดใช้ หรือจ่าย 2 เท่าของราคาปก บวกค่าดำเนินการ 100 บาท"
+  },
+  {
+    "id": 17,
+    "query": "ค่าธรรมเนียมดำเนินการกรณีหนังสือสูญหายกี่บาท",
+    "expected_rule_ids": ["RULE-13"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 5 ข้อ 5.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "100 บาทต่อเล่ม"
+  },
+  {
+    "id": 18,
+    "query": "ทำหนังสือเปียกน้ำจนหน้าขาดเสียหายหนัก ต้องชดใช้ยังไง",
+    "expected_rule_ids": ["RULE-14"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 5 ข้อ 5.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "ปฏิบัติตามเกณฑ์กรณีหนังสือสูญหาย (ชดใช้เล่มใหม่หรือจ่าย 2 เท่า + 100 บาท)"
+  },
+  {
+    "id": 19,
+    "query": "ห้องค้นคว้ากลุ่มขนาดเล็กต้องมีสมาชิกอย่างน้อยกี่คน",
+    "expected_rule_ids": ["RULE-15"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 6 ข้อ 6.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "ไม่น้อยกว่า 3 คน (สำหรับห้องขนาด 4-6 คน)"
+  },
+  {
+    "id": 20,
+    "query": "จองห้องศึกษาค้นคว้ากลุ่มได้ครั้งละกี่ชั่วโมง",
+    "expected_rule_ids": ["RULE-16"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 6 ข้อ 6.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "รอบละไม่เกิน 3 ชั่วโมงต่อกลุ่ม ต่อวัน"
+  },
+  {
+    "id": 21,
+    "query": "จองห้องค้นคว้าไว้แล้วไปสายได้กี่นาทีถึงไม่โดนตัดสิทธิ์",
+    "expected_rule_ids": ["RULE-16"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 6 ข้อ 6.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "ต้องมารายงานตัวภายใน 15 นาที"
+  },
+  {
+    "id": 22,
+    "query": "พจนานุกรมและหนังสืออ้างอิงยืมออกนอกอาคารได้หรือไม่",
+    "expected_rule_ids": ["RULE-17"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 7 ข้อ 7.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "ไม่อนุญาตให้ยืมออกนอกอาคาร ให้ใช้ได้เฉพาะภายในห้องสมุดเท่านั้น"
+  },
+  {
+    "id": 23,
+    "query": "วิทยานิพนธ์ฉบับตัวเล่มยืมกลับบ้านได้ไหม",
+    "expected_rule_ids": ["RULE-18"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 7 ข้อ 7.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "ห้ามยืมออกนอกห้องสมุด แต่ดาวน์โหลดฉบับดิจิทัลผ่าน IR ได้"
+  },
+  {
+    "id": 24,
+    "query": "ถ้าห้องสมุดไม่มีหนังสือเล่มที่ต้องการ สามารถยืมจากมหาลัยอื่นได้ไหม",
+    "expected_rule_ids": ["RULE-19"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 8 ข้อ 8.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "สามารถใช้บริการยืมระหว่างห้องสมุด (ILL) ได้"
+  },
+  {
+    "id": 25,
+    "query": "นำแก้วกาแฟหรือชานมไข่มุกเข้ามาดื่มในห้องสมุดได้ไหม",
+    "expected_rule_ids": ["RULE-20"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 9 ข้อ 9.1"],
+    "category": "in-domain",
+    "ground_truth_answer": "ได้เฉพาะภาชนะที่มีฝาปิดสนิทมิดชิด ไม่อนุญาตแก้วเปิดฝาหรือขนมขบเคี้ยว"
+  },
+  {
+    "id": 26,
+    "query": "โซนควบคุมความเงียบพิเศษ (Silent Zone) อยู่ที่ชั้นไหน",
+    "expected_rule_ids": ["RULE-21"],
+    "expected_citation": ["ระเบียบห้องสมุด หมวด 9 ข้อ 9.2"],
+    "category": "in-domain",
+    "ground_truth_answer": "ชั้น 3 และ ชั้น 4"
+  },
+  {
+    "id": 27,
+    "query": "ขอยืมเงินสดฉุกเฉินจากห้องสมุดได้หรือไม่",
+    "expected_rule_ids": [],
+    "expected_citation": [],
+    "category": "out-of-scope",
+    "ground_truth_answer": "ห้องสมุดไม่มีบริการให้ยืมเงินสด"
+  },
+  {
+    "id": 28,
+    "query": "ห้องสมุดมีร้านขายอาหารตามสั่งหรือข้าวเหนียวหมูปิ้งไหม",
+    "expected_rule_ids": [],
+    "expected_citation": [],
+    "category": "out-of-scope",
+    "ground_truth_answer": "ไม่มี ห้องสมุดไม่อนุญาตให้นำอาหารเข้ามาและไม่มีร้านอาหารภายในอาคาร"
+  },
+  {
+    "id": 29,
+    "query": "จองคิวฉีดวัคซีนป้องกันไข้หวัดใหญ่ที่ห้องสมุดได้ไหม",
+    "expected_rule_ids": [],
+    "expected_citation": [],
+    "category": "out-of-scope",
+    "ground_truth_answer": "ห้องสมุดไม่มีบริการทางการแพทย์หรือการฉีดวัคซีน"
+  },
+  {
+    "id": 30,
+    "query": "ขอเช่าเตียงนอนค้างคืนที่ห้องสมุดได้ไหม",
+    "expected_rule_ids": [],
+    "expected_citation": [],
+    "category": "out-of-scope",
+    "ground_truth_answer": "ห้องสมุดไม่มีบริการเตียงนอนค้างคืน"
+  }
+]
+
