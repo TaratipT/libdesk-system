@@ -1,4 +1,4 @@
-// LibDesk: Library Service & Regulation Circulation Desk - Client Logic
+// LibDesk: Library Service & Regulation Circulation Desk - Client Logic (with SSE Streaming)
 
 document.addEventListener("DOMContentLoaded", () => {
     switchMember();
@@ -27,8 +27,8 @@ async function switchMember() {
 // แสดงข้อมูลบุคคลทั่วไป (Guest)
 function renderGuestCard() {
     document.getElementById("card-member-id").textContent = "-";
-    document.getElementById("card-member-name").textContent = "บุคคลทั่วไป / ผู้มาติดต่อภายนอก";
-    document.getElementById("card-member-faculty").textContent = "บุคคลภายนอก (Guest)";
+    document.getElementById("card-member-name").textContent = "บุคคลทั่วไป (Guest)";
+    document.getElementById("card-member-faculty").textContent = "บุคคลภายนอก";
     document.getElementById("member-role-badge").textContent = "ผู้ใช้บริการทั่วไป";
 
     const fineBox = document.getElementById("fine-box");
@@ -41,7 +41,7 @@ function renderGuestCard() {
     fineDesc.textContent = "สถานะบุคคลทั่วไป ไม่มีภาระผูกพันในระบบ";
 
     const booksList = document.getElementById("borrowed-books-list");
-    booksList.innerHTML = `<li class="item-card" style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">ไม่มีรายการยืมในระบบ (สืบค้นข้อบังคับและค้นหาหนังสือได้ตามปกติ)</li>`;
+    booksList.innerHTML = `<li class="item-card" style="color: var(--text-muted); text-align: center; font-size: 0.84rem;">ไม่มีรายการทรัพยากรค้างส่งในระบบ</li>`;
 }
 
 // แสดงข้อมูลบัตรสมาชิก
@@ -108,11 +108,11 @@ async function loadStudyRooms() {
             const li = document.createElement("div");
             li.className = "item-card";
             li.innerHTML = `
-                <div class="item-title">${r.name}</div>
-                <div class="item-meta">
-                    <span>${r.capacity}</span>
-                    <span class="${badgeClass}">[สถานะ: ${r.status}]</span>
+                <div class="item-header-row">
+                    <span class="item-title">${r.name}</span>
+                    <span class="${badgeClass}">${r.status}</span>
                 </div>
+                <div class="item-sub-desc">ความจุ: ${r.capacity}</div>
             `;
             container.appendChild(li);
         });
@@ -121,7 +121,7 @@ async function loadStudyRooms() {
     }
 }
 
-// ส่งข้อความสอบถาม
+// ส่งข้อความสอบถามด้วยระบบ SSE Streaming (Lecture 4 Standard)
 async function submitQuery(e) {
     if (e) e.preventDefault();
     const input = document.getElementById("query-input");
@@ -134,13 +134,28 @@ async function submitQuery(e) {
     const submitBtn = document.getElementById("submit-btn");
     const loadingCard = document.getElementById("loading-card");
     const resultContainer = document.getElementById("result-container");
+    const welcomeCard = document.getElementById("welcome-card");
+    const answerText = document.getElementById("answer-text");
+    const processTag = document.getElementById("system-process-tag");
+    const citationsList = document.getElementById("citations-list");
+    const actionBox = document.getElementById("action-data-box");
+    const loadingTitle = document.querySelector("#loading-card .loading-title");
 
     submitBtn.disabled = true;
+    if (welcomeCard) welcomeCard.classList.add("hidden");
     loadingCard.classList.remove("hidden");
+    if (loadingTitle) loadingTitle.textContent = "กำลังสืบค้นข้อบังคับและประมวลผลข้อมูล...";
     resultContainer.classList.add("hidden");
 
+    // ล้างข้อความผลลัพธ์รอบก่อนหน้า
+    answerText.textContent = "";
+    processTag.textContent = "ระบบงาน: ศูนย์บริการสารสนเทศทั่วไป";
+    citationsList.innerHTML = "";
+    actionBox.innerHTML = "";
+    actionBox.classList.add("hidden");
+
     try {
-        const res = await fetch("/api/chat", {
+        const res = await fetch("/api/chat/stream", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -154,13 +169,58 @@ async function submitQuery(e) {
             throw new Error(errData.detail || "เกิดข้อผิดพลาดในการประมวลผลข้อมูล");
         }
 
-        const data = await res.json();
-        renderResult(data);
+        // Lecture 4: อ่าน SSE Stream ผ่าน ReadableStream (TextDecoderStream)
+        const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+        let buffer = "";
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            buffer += value;
+            const events = buffer.split("\n\n");
+            buffer = events.pop();
+
+            for (const ev of events) {
+                if (ev.startsWith("data: ")) {
+                    const rawData = ev.slice(6).trim();
+                    if (rawData === "[DONE]") {
+                        break;
+                    }
+
+                    try {
+                        const payload = JSON.parse(rawData);
+
+                        if (payload.type === "status") {
+                            if (loadingTitle) loadingTitle.textContent = payload.content;
+                        } else if (payload.type === "token") {
+                            if (!loadingCard.classList.contains("hidden")) {
+                                loadingCard.classList.add("hidden");
+                                resultContainer.classList.remove("hidden");
+                            }
+                            answerText.textContent += payload.content;
+                        } else if (payload.type === "metadata") {
+                            renderMetadata(payload);
+                        }
+                    } catch (errParse) {
+                        console.warn("SSE frame error:", errParse);
+                    }
+                }
+            }
+        }
+
+        input.value = "";
     } catch (err) {
         alert("ข้อผิดพลาด: " + err.message);
+        if (welcomeCard && resultContainer.classList.contains("hidden")) {
+            welcomeCard.classList.remove("hidden");
+        }
     } finally {
         submitBtn.disabled = false;
         loadingCard.classList.add("hidden");
+        if (answerText.textContent.trim()) {
+            resultContainer.classList.remove("hidden");
+        }
     }
 }
 
@@ -176,16 +236,11 @@ function mapToolToThai(toolName) {
     return map[toolName] || toolName;
 }
 
-// เรนเดอร์ผลลัพธ์คำตอบ, การอ้างอิง และตารางทางการ
-function renderResult(data) {
-    const resultContainer = document.getElementById("result-container");
-    const answerText = document.getElementById("answer-text");
+// เรนเดอร์ Citations และ Action Data เมื่อสตรีมเสร็จสิ้น
+function renderMetadata(data) {
     const processTag = document.getElementById("system-process-tag");
     const citationsList = document.getElementById("citations-list");
     const actionBox = document.getElementById("action-data-box");
-
-    // ข้อความคำตอบ
-    answerText.textContent = data.answer || "ไม่มีข้อมูลตอบกลับจากระบบ";
 
     // แสดงระบบงานที่ประมวลผล
     if (data.tools_used && data.tools_used.length > 0) {
@@ -253,9 +308,6 @@ function renderResult(data) {
     } else {
         actionBox.classList.add("hidden");
     }
-
-    resultContainer.classList.remove("hidden");
-    resultContainer.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 // ตัวช่วยใส่คำถามจาก Quick Topic Button

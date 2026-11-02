@@ -4,7 +4,7 @@
 
 import os
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 
 # โหลดตัวแปรจากไฟล์ .env
 load_dotenv()
@@ -30,4 +30,14 @@ def get_openai_client() -> OpenAI:
         kwargs["api_key"] = OPENAI_API_KEY
 
     return OpenAI(**kwargs)
+
+def get_async_openai_client() -> AsyncOpenAI:
+    kwargs = {}
+    if OPENAI_BASE_URL:
+        kwargs["base_url"] = OPENAI_BASE_URL
+    if OPENAI_API_KEY:
+        kwargs["api_key"] = OPENAI_API_KEY
+
+    return AsyncOpenAI(**kwargs)
+
 

@@ -1,12 +1,12 @@
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import HOST, PORT, MODEL_NAME
 from app.schemas import ChatRequest, AgentResponse
-from app.agent.loop import run_agent_loop
+from app.agent.loop import run_agent_loop, run_agent_loop_stream
 from app.rag.retriever import retrieve_regulations
 from app.database import get_member, search_catalog, get_all_study_rooms
 
@@ -45,6 +45,19 @@ def chat(request: ChatRequest):
         return run_agent_loop(
             user_message=request.message,
             member_id=request.member_id
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/chat/stream")
+async def chat_stream(request: ChatRequest):
+    try:
+        return StreamingResponse(
+            run_agent_loop_stream(
+                user_message=request.message,
+                member_id=request.member_id
+            ),
+            media_type="text/event-stream"
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

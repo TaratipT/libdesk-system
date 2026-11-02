@@ -459,95 +459,43 @@ body {
 }
 
 /* ==========================================================================
-   หัวข้อข้อบังคับและบริการที่พบบ่อย (Quick Topic Cards)
+   คำถามที่พบบ่อย (Subtle Suggestion Chips)
    ========================================================================== */
 .quick-topics-section {
-    margin-top: 24px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border-light);
+    margin-bottom: 14px;
 }
 
 .quick-topics-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 500;
     color: var(--text-muted);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
-.quick-topics-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+.quick-topics-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-@media (max-width: 640px) {
-    .quick-topics-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.topic-card-btn {
-    text-align: left;
+.topic-chip-btn {
     background-color: var(--bg-subtle);
     border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
     transition: all 0.15s ease;
-    position: relative;
+    white-space: nowrap;
 }
 
-.topic-card-btn:hover {
+.topic-chip-btn:hover {
     background-color: #ffffff;
     border-color: var(--blue-500);
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
-    transform: translateY(-1px);
-}
-
-.topic-icon {
-    font-size: 1.35rem;
-    line-height: 1;
-    flex-shrink: 0;
-}
-
-.topic-text {
-    flex: 1;
-    min-width: 0;
-}
-
-.topic-title {
-    font-weight: 600;
-    font-size: 0.88rem;
-    color: var(--navy-900);
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.topic-desc {
-    font-size: 0.76rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.topic-arrow {
-    color: var(--border-dark);
-    font-weight: 600;
-    transition: transform 0.15s ease, color 0.15s ease;
-}
-
-.topic-card-btn:hover .topic-arrow {
-    color: var(--blue-600);
-    transform: translateX(3px);
+    color: var(--blue-700);
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
 }
 
 /* ==========================================================================
@@ -611,8 +559,22 @@ body {
     font-size: 0.98rem;
     line-height: 1.8;
     color: var(--navy-900);
-    white-space: pre-wrap;
+    white-space: pre-line;
     padding-bottom: 16px;
+    word-break: break-word;
+}
+
+.item-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.item-sub-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
 }
 
 /* ตารางข้อมูลเพิ่มเติม (Action Details Table) */
