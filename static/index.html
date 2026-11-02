@@ -3,130 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LibDesk: ระบบบริการและระเบียบห้องสมุด</title>
+    <title>LibDesk : ระบบแนะนำและตรวจสอบระเบียบการยืม-คืนและทรัพยากรห้องสมุด (Library Resource & Policy System)</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: sans-serif; max-width: 800px; margin: 30px auto; padding: 0 15px; line-height: 1.5;">
+<body>
 
-    <h2>LibDesk: ระบบบริการและระเบียบห้องสมุด</h2>
-    <p>แบบทดสอบการทำงานของระบบ (Functional Prototype)</p>
-    <hr>
+    <!-- แถบส่วนหัวสถาบัน (Institutional Header) -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-section">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <line x1="9" y1="6" x2="15" y2="6"></line>
+                        <line x1="9" y1="10" x2="15" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1 class="brand-title">LibDesk</h1>
+                    <p class="brand-subtitle">ระบบแนะนำและตรวจสอบระเบียบการยืม-คืนและทรัพยากรห้องสมุด (Library Resource & Policy System)</p>
+                </div>
+            </div>
 
-    <!-- เลือกรหัสสมาชิก -->
-    <div style="margin-bottom: 15px;">
-        <label for="member-select"><strong>สถานะผู้ใช้งาน:</strong></label>
-        <select id="member-select" onchange="loadMember()">
-            <option value="">บุคคลทั่วไป / บุคคลภายนอก (Guest)</option>
-            <option value="STD6501" selected>STD6501 - นายสมชาย ใจดี (ป.ตรี)</option>
-            <option value="STD6502">STD6502 - น.ส.วิภา สุขุม (ป.โท)</option>
-            <option value="PRF1001">PRF1001 - ผศ.ดร.กิตติภพ (อาจารย์)</option>
-        </select>
-    </div>
+            <div class="header-controls">
+                <div class="user-session-box">
+                    <span class="session-label">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        เข้าใช้ในนาม:
+                    </span>
+                    <select id="member-select" onchange="switchMember()">
+                        <option value="" selected>บุคคลทั่วไป / ผู้มาติดต่อภายนอก (Guest)</option>
+                        <option value="STD6501">STD6501 - นายสมชาย ใจดี (ป.ตรี)</option>
+                        <option value="STD6502">STD6502 - น.ส. วิภา สุขุม (ป.โท)</option>
+                        <option value="PRF1001">PRF1001 - ผศ.ดร. กิตติภพ (อาจารย์)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <!-- ข้อมูลสมาชิก -->
-    <fieldset style="margin-bottom: 20px;">
-        <legend>ข้อมูลสมาชิกปัจจุบัน</legend>
-        <div id="member-info">กำลังโหลดข้อมูล...</div>
-    </fieldset>
 
-    <!-- ฟอร์มสอบถาม Agent -->
-    <form id="chat-form" onsubmit="sendQuery(event)">
-        <label for="query-input"><strong>ข้อความสอบถามระเบียบหรือบริการ:</strong></label><br>
-        <textarea id="query-input" rows="3" style="width: 100%; margin-top: 5px; box-sizing: border-box;" placeholder="พิมพ์คำถาม เช่น 'บุคคลภายนอกเข้าได้ไหม', 'ยืมหนังสือได้กี่เล่ม', 'เช็คยอดค้างส่งและค่าปรับ', 'หาหนังสือ Clean Code'..." required></textarea>
-        <br><br>
-        <button type="submit" id="submit-btn" style="padding: 6px 16px; cursor: pointer;">ส่งคำถามไปยัง Agent</button>
-        <span id="loading-indicator" style="display: none; color: gray; margin-left: 10px;">กำลังประมวลผล...</span>
-    </form>
+    <!-- โครงสร้างหลัก 2 คอลัมน์ -->
+    <main class="main-layout">
+        
+        <!-- ฝั่งซ้าย: ข้อมูลสมาชิกและบริการกายภาพ -->
+        <aside class="sidebar-column">
+            <!-- บัตรข้อมูลสมาชิก -->
+            <section class="card member-profile-card">
+                <div class="card-header">
+                    <div class="header-title-with-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                            <circle cx="9" cy="10" r="2"></circle>
+                            <line x1="15" y1="8" x2="17" y2="8"></line>
+                            <line x1="15" y1="12" x2="17" y2="12"></line>
+                            <line x1="7" y1="16" x2="17" y2="16"></line>
+                        </svg>
+                        <h2>ข้อมูลผู้ใช้บริการ</h2>
+                    </div>
+                    <span id="member-role-badge" class="role-pill">ผู้ใช้บริการทั่วไป</span>
+                </div>
+                <div class="card-body">
+                    <div class="profile-meta-grid">
+                        <div class="meta-item">
+                            <span class="meta-label">รหัสสมาชิก</span>
+                            <span id="card-member-id" class="meta-value">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">ชื่อ - นามสกุล</span>
+                            <span id="card-member-name" class="meta-value">บุคคลทั่วไป / ผู้มาติดต่อภายนอก</span>
+                        </div>
+                        <div class="meta-item full-span">
+                            <span class="meta-label">คณะ / หน่วยงานสังกัด</span>
+                            <span id="card-member-faculty" class="meta-value">บุคคลภายนอก (Guest)</span>
+                        </div>
+                    </div>
+                    
+                    <div id="fine-box" class="fine-status-card">
+                        <div class="fine-label-row">
+                            <span class="fine-title">ยอดค่าปรับค้างชำระ</span>
+                            <span id="card-fine-balance" class="fine-value">0.00 บาท</span>
+                        </div>
+                        <div id="fine-desc" class="fine-subtext">สถานะบุคคลทั่วไป ไม่มีภาระผูกพันในระบบ</div>
+                    </div>
 
-    <!-- แสดงผลลัพธ์ -->
-    <div id="result-box" style="margin-top: 25px; display: none;">
-        <fieldset>
-            <legend><strong>ผลการตอบกลับจาก Agent</strong></legend>
-            <p><strong>เครื่องมือที่ใช้ (Tools):</strong> <span id="tools-used">-</span></p>
-            <p><strong>ข้อบังคับที่ใช้อ้างอิง (Citations):</strong> <span id="citations-list">-</span></p>
-            <hr>
-            <div id="answer-text" style="white-space: pre-wrap; background: #f9f9f9; padding: 12px; border: 1px solid #ccc;"></div>
-        </fieldset>
-    </div>
+                    <div class="section-divider">
+                        <span>รายการทรัพยากรที่ยืมปัจจุบัน</span>
+                    </div>
 
-    <script>
-        // โหลดข้อมูลสมาชิกเมื่อเปิดหน้าหรือเปลี่ยน dropdown
-        async function loadMember() {
-            const memberId = document.getElementById("member-select").value;
-            const infoDiv = document.getElementById("member-info");
+                    <ul id="borrowed-books-list" class="book-items-list">
+                        <li class="item-card" style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">ไม่มีรายการยืมในระบบ (สืบค้นข้อบังคับและค้นหาหนังสือได้ตามปกติ)</li>
+                    </ul>
+                </div>
+            </section>
 
-            // กรณีเป็นบุคคลทั่วไป ไม่มีรหัสสมาชิก
-            if (!memberId) {
-                infoDiv.innerHTML = `
-                    <p>สถานะ: <strong>บุคคลทั่วไป / บุคคลภายนอก (Guest)</strong></p>
-                    <p style="color: gray; margin: 0;">ไม่มีประวัติการยืมในระบบ สามารถสอบถามระเบียบ เวลาทำการ ค่าธรรมเนียมเข้าใช้บริการ หรือค้นหาหนังสือได้ตามปกติ</p>
-                `;
-                return;
-            }
+            <!-- สถานะห้องค้นคว้ากลุ่ม -->
+            <section class="card facility-card">
+                <div class="card-header">
+                    <div class="header-title-with-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <h3>ห้องค้นคว้ากลุ่ม (Group Study)</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="room-status-list" class="facility-grid">
+                        <!-- รายการห้อง -->
+                    </div>
+                </div>
+            </section>
+        </aside>
 
-            try {
-                const res = await fetch(`/api/member/${memberId}`);
-                if (!res.ok) throw new Error("ไม่พบสมาชิก");
-                const data = await res.json();
+        <!-- ฝั่งขวา: เคาน์เตอร์สืบค้นและแสดงผลข้อบังคับ -->
+        <section class="content-column">
+            
+            <!-- การ์ดค้นหาหลัก -->
+            <section class="card desk-search-card">
+                <div class="card-header">
+                    <div class="header-title-with-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <h2>เคาน์เตอร์บริการสืบค้นระเบียบและข้อมูลห้องสมุด</h2>
+                    </div>
+                </div>
                 
-                let booksHtml = "ไม่มีหนังสือที่ยืมอยู่";
-                if (data.borrowed_books && data.borrowed_books.length > 0) {
-                    booksHtml = "<ul>" + data.borrowed_books.map(b => 
-                        `<li>${b.title} (กำหนดส่ง: ${b.due_date} ${b.days_overdue > 0 ? `<b style="color:red;">[เกินกำหนด ${b.days_overdue} วัน]</b>` : ''})</li>`
-                    ).join("") + "</ul>";
-                }
+                <div class="card-body">
+                    <p class="search-helper-text">
+                        ระบุคำถามเกี่ยวกับระเบียบการใช้งาน, สิทธิการยืม, ตรวจสอบตำแหน่งหนังสือ, หรือคำนวณอัตราค่าปรับส่งคืนล่าช้า
+                    </p>
 
-                infoDiv.innerHTML = `
-                    <p>ชื่อ: <strong>${data.name}</strong> (${data.role_th}) | สังกัด: ${data.faculty} | ค่าปรับค้างชำระ: <strong style="color:red;">${data.fine_balance.toFixed(2)} บาท</strong></p>
-                    <p>รายการหนังสือที่ยืมอยู่:</p>
-                    ${booksHtml}
-                `;
-            } catch (err) {
-                infoDiv.textContent = "เกิดข้อผิดพลาดในการโหลดข้อมูลสมาชิก";
-            }
-        }
+                    <form id="query-form" onsubmit="submitQuery(event)">
+                        <div class="search-box-wrapper">
+                            <div class="search-input-container">
+                                <svg class="search-box-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <input 
+                                    type="text" 
+                                    id="query-input" 
+                                    placeholder="พิมพ์คำถาม เช่น 'บุคคลภายนอกเข้าได้ไหม', 'ส่งหนังสือเกิน 4 วัน ค่าปรับเท่าไร'..."
+                                    autocomplete="off"
+                                    required
+                                />
+                            </div>
+                            <button type="submit" id="submit-btn" class="btn-search">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <span>สืบค้นข้อมูล</span>
+                            </button>
+                        </div>
+                    </form>
 
-        // ส่งคำถามไปยัง /api/chat
-        async function sendQuery(e) {
-            e.preventDefault();
-            const input = document.getElementById("query-input");
-            const query = input.value.trim();
-            if (!query) return;
 
-            const memberSelectValue = document.getElementById("member-select").value;
-            const memberId = memberSelectValue ? memberSelectValue : null;
+                </div>
+            </section>
 
-            const submitBtn = document.getElementById("submit-btn");
-            const loadingIndicator = document.getElementById("loading-indicator");
-            const resultBox = document.getElementById("result-box");
+            <!-- กล่องแสดงข้อความสรุปผล (Official Inquiry Result Card) -->
+            <section id="result-container" class="card result-card hidden">
+                <div class="card-header result-header">
+                    <div class="header-title-with-icon">
+                        <div class="official-seal-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="result-title">ผลการตรวจสอบข้อมูลและข้อบังคับสถาบัน</h2>
+                            <div id="system-process-tag" class="result-subtitle">ระบบงาน: ศูนย์บริการสารสนเทศทั่วไป</div>
+                        </div>
+                    </div>
+                    <span class="official-tag">สรุปสารสนเทศ</span>
+                </div>
 
-            submitBtn.disabled = true;
-            loadingIndicator.style.display = "inline";
+                <div class="card-body result-body">
+                    <!-- ข้อความสรุปคำตอบ -->
+                    <div id="answer-text" class="result-text-content"></div>
 
-            try {
-                const res = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: query, member_id: memberId })
-                });
+                    <!-- ตารางข้อมูลเพิ่มเติม (ใบประเมินค่าปรับ / ผลค้นหาหนังสือ) -->
+                    <div id="action-data-box" class="action-details-container hidden"></div>
 
-                if (!res.ok) throw new Error("Server error: " + res.status);
-                const data = await res.json();
+                    <!-- รายการข้อบังคับที่ใช้อ้างอิง -->
+                    <div class="citations-panel">
+                        <div class="citations-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                            <span>เอกสารและข้อบังคับที่ใช้อ้างอิง (Official Citations):</span>
+                        </div>
+                        <div id="citations-list" class="citation-pills-list"></div>
+                    </div>
+                </div>
+            </section>
 
-                // แสดงผลลัพธ์
-                document.getElementById("tools-used").textContent = data.tools_used.length > 0 ? data.tools_used.join(", ") : "ตอบตรง (ไม่เรียก tool)";
-                document.getElementById("citations-list").textContent = data.citations.length > 0 ? data.citations.join(" | ") : "ไม่มีอ้างอิง";
-                document.getElementById("answer-text").textContent = data.answer;
-                resultBox.style.display = "block";
-            } catch (err) {
-                alert("เกิดข้อผิดพลาด: " + err.message);
-            } finally {
-                submitBtn.disabled = false;
-                loadingIndicator.style.display = "none";
-            }
-        }
+            <!-- การ์ดสถานะกำลังสืบค้น (Clean Progress Card) -->
+            <div id="loading-card" class="card loading-card hidden">
+                <div class="spinner"></div>
+                <div class="loading-text-block">
+                    <div class="loading-title">กำลังตรวจสอบฐานข้อมูลและสืบค้นข้อบังคับ...</div>
+                    <div class="loading-desc">ระบบกำลังค้นหาและประมวลผลข้อบังคับสถาบันที่เกี่ยวข้อง กรุณารอสักครู่</div>
+                </div>
+            </div>
 
-        // โหลดข้อมูลสมาชิกครั้งแรก
-        document.addEventListener("DOMContentLoaded", loadMember);
-    </script>
+        </section>
+    </main>
+
+    <!-- ส่วนท้าย (Footer) -->
+    <footer class="app-footer">
+        LibDesk : ระบบแนะนำและตรวจสอบระเบียบการยืม-คืนและทรัพยากรห้องสมุด (Library Resource & Policy System)
+    </footer>
+
+    <script src="/static/app.js"></script>
 </body>
 </html>

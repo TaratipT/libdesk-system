@@ -1,0 +1,750 @@
+/* ==========================================================================
+   LibDesk: Modern University Library Circulation & Information Desk Portal
+   Clean, Professional, Institutional Design (No AI-cliche tropes)
+   ========================================================================== */
+
+:root {
+    --navy-900: #0f172a;
+    --navy-800: #1e293b;
+    --navy-700: #334155;
+    --blue-700: #1d4ed8;
+    --blue-600: #2563eb;
+    --blue-500: #3b82f6;
+    --blue-50: #eff6ff;
+    --amber-500: #f59e0b;
+    
+    --bg-page: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-subtle: #f8fafc;
+    
+    --border-light: #e2e8f0;
+    --border-medium: #cbd5e1;
+    --border-dark: #94a3b8;
+    
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    
+    --success-bg: #ecfdf5;
+    --success-border: #a7f3d0;
+    --success-text: #065f46;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+    --danger-text: #991b1b;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body, button, input, select, textarea, optgroup {
+    font-family: 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    line-height: 1.6;
+    font-size: 15px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   แถบส่วนหัวสถาบัน (Institutional Header)
+   ========================================================================== */
+.app-header {
+    background-color: var(--navy-900);
+    color: #ffffff;
+    padding: 14px 24px;
+    border-bottom: 2px solid #334155;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #ffffff;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.brand-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+}
+
+.version-badge {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #e2e8f0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+}
+
+.brand-subtitle {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-session-box {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.session-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+}
+
+.user-session-box select {
+    background-color: #ffffff;
+    color: var(--navy-900);
+    border: none;
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ==========================================================================
+   โครงสร้าง 2 คอลัมน์ (Main Layout)
+   ========================================================================== */
+.main-layout {
+    max-width: 1280px;
+    margin: 24px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 24px;
+    flex: 1;
+    width: 100%;
+}
+
+@media (max-width: 960px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   การ์ดพื้นฐาน (Cards)
+   ========================================================================== */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--navy-900);
+}
+
+.card-header h2, .card-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--navy-900);
+}
+
+.card-body {
+    padding: 18px;
+}
+
+/* ==========================================================================
+   ฝั่งซ้าย: ข้อมูลสมาชิก (Member Profile)
+   ========================================================================== */
+.role-pill {
+    background-color: var(--blue-50);
+    color: var(--blue-700);
+    border: 1px solid #bfdbfe;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+}
+
+.profile-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.meta-item.full-span {
+    grid-column: span 2;
+}
+
+.meta-label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+}
+
+.meta-value {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.fine-status-card {
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+}
+
+.fine-status-card.has-fine {
+    background-color: var(--danger-bg);
+    border-color: var(--danger-border);
+}
+
+.fine-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.fine-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.fine-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.fine-subtext {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.section-divider {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 18px 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.book-items-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-card {
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+}
+
+.item-card:hover {
+    border-color: var(--border-medium);
+    background-color: #ffffff;
+}
+
+.item-title {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.item-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.tag-danger {
+    color: var(--danger-text);
+    background-color: #fee2e2;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.tag-success {
+    color: var(--success-text);
+    background-color: #d1fae5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.facility-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   ฝั่งขวา: เคาน์เตอร์ค้นหา (Search Console)
+   ========================================================================== */
+.badge-subtle {
+    background-color: #f1f5f9;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.search-helper-text {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.search-box-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-input-container {
+    position: relative;
+    flex: 1;
+}
+
+.search-box-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    pointer-events: none;
+}
+
+.search-input-container input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px 0 44px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    border: 1.5px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    background-color: #ffffff;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+}
+
+.search-input-container input:focus {
+    outline: none;
+    border-color: var(--blue-600);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.btn-search {
+    height: 48px;
+    background-color: var(--blue-600);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0 22px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-search:hover {
+    background-color: var(--blue-700);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.btn-search:disabled {
+    background-color: var(--border-dark);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   หัวข้อข้อบังคับและบริการที่พบบ่อย (Quick Topic Cards)
+   ========================================================================== */
+.quick-topics-section {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-light);
+}
+
+.quick-topics-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.quick-topics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .quick-topics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.topic-card-btn {
+    text-align: left;
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.topic-card-btn:hover {
+    background-color: #ffffff;
+    border-color: var(--blue-500);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+}
+
+.topic-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.topic-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.topic-title {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--navy-900);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topic-desc {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topic-arrow {
+    color: var(--border-dark);
+    font-weight: 600;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.topic-card-btn:hover .topic-arrow {
+    color: var(--blue-600);
+    transform: translateX(3px);
+}
+
+/* ==========================================================================
+   ผลการตรวจสอบและสรุปข้อมูล (Result Card)
+   ========================================================================== */
+.result-card {
+    border: 1px solid var(--border-medium);
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result-header {
+    background: linear-gradient(to right, #f8fafc, #ffffff);
+    border-bottom: 2px solid var(--navy-900);
+    padding: 16px 20px;
+}
+
+.official-seal-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background-color: var(--navy-900);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.result-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--navy-900);
+}
+
+.result-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.official-tag {
+    background-color: var(--navy-900);
+    color: #ffffff;
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.result-body {
+    padding: 20px;
+}
+
+.result-text-content {
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--navy-900);
+    white-space: pre-wrap;
+    padding-bottom: 16px;
+}
+
+/* ตารางข้อมูลเพิ่มเติม (Action Details Table) */
+.action-details-container {
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin: 16px 0;
+}
+
+.official-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 0.88rem;
+    background-color: #ffffff;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.official-table th, .official-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.official-table th {
+    background-color: #f8fafc;
+    color: var(--navy-800);
+    font-weight: 600;
+}
+
+.official-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Citations Panel */
+.citations-panel {
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    margin-top: 18px;
+}
+
+.citations-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--navy-800);
+    margin-bottom: 8px;
+}
+
+.citation-pills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.citation-pill {
+    background-color: #ffffff;
+    border: 1px solid var(--border-medium);
+    color: var(--navy-800);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* ==========================================================================
+   การ์ดสถานะกำลังสืบค้น (Clean Progress Card)
+   ========================================================================== */
+.loading-card {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-medium);
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border-light);
+    border-top: 3px solid var(--blue-600);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--navy-900);
+}
+
+.loading-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   ส่วนท้าย (Footer)
+   ========================================================================== */
+.app-footer {
+    padding: 24px 20px;
+    margin-top: auto;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-align: center;
+    border-top: 1px solid var(--border-light);
+    background-color: transparent;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.font-mono {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
