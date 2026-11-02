@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibDesk: ระบบบริการและระเบียบห้องสมุด</title>
+</head>
+<body style="font-family: sans-serif; max-width: 800px; margin: 30px auto; padding: 0 15px; line-height: 1.5;">
+
+    <h2>LibDesk: ระบบบริการและระเบียบห้องสมุด</h2>
+    <p>แบบทดสอบการทำงานของระบบ (Functional Prototype)</p>
+    <hr>
+
+    <!-- เลือกรหัสสมาชิก -->
+    <div style="margin-bottom: 15px;">
+        <label for="member-select"><strong>สถานะผู้ใช้งาน:</strong></label>
+        <select id="member-select" onchange="loadMember()">
+            <option value="">บุคคลทั่วไป / บุคคลภายนอก (Guest)</option>
+            <option value="STD6501" selected>STD6501 - นายสมชาย ใจดี (ป.ตรี)</option>
+            <option value="STD6502">STD6502 - น.ส.วิภา สุขุม (ป.โท)</option>
+            <option value="PRF1001">PRF1001 - ผศ.ดร.กิตติภพ (อาจารย์)</option>
+        </select>
+    </div>
+
+    <!-- ข้อมูลสมาชิก -->
+    <fieldset style="margin-bottom: 20px;">
+        <legend>ข้อมูลสมาชิกปัจจุบัน</legend>
+        <div id="member-info">กำลังโหลดข้อมูล...</div>
+    </fieldset>
+
+    <!-- ฟอร์มสอบถาม Agent -->
+    <form id="chat-form" onsubmit="sendQuery(event)">
+        <label for="query-input"><strong>ข้อความสอบถามระเบียบหรือบริการ:</strong></label><br>
+        <textarea id="query-input" rows="3" style="width: 100%; margin-top: 5px; box-sizing: border-box;" placeholder="พิมพ์คำถาม เช่น 'บุคคลภายนอกเข้าได้ไหม', 'ยืมหนังสือได้กี่เล่ม', 'เช็คยอดค้างส่งและค่าปรับ', 'หาหนังสือ Clean Code'..." required></textarea>
+        <br><br>
+        <button type="submit" id="submit-btn" style="padding: 6px 16px; cursor: pointer;">ส่งคำถามไปยัง Agent</button>
+        <span id="loading-indicator" style="display: none; color: gray; margin-left: 10px;">กำลังประมวลผล...</span>
+    </form>
+
+    <!-- แสดงผลลัพธ์ -->
+    <div id="result-box" style="margin-top: 25px; display: none;">
+        <fieldset>
+            <legend><strong>ผลการตอบกลับจาก Agent</strong></legend>
+            <p><strong>เครื่องมือที่ใช้ (Tools):</strong> <span id="tools-used">-</span></p>
+            <p><strong>ข้อบังคับที่ใช้อ้างอิง (Citations):</strong> <span id="citations-list">-</span></p>
+            <hr>
+            <div id="answer-text" style="white-space: pre-wrap; background: #f9f9f9; padding: 12px; border: 1px solid #ccc;"></div>
+        </fieldset>
+    </div>
+
+    <script>
+        // โหลดข้อมูลสมาชิกเมื่อเปิดหน้าหรือเปลี่ยน dropdown
+        async function loadMember() {
+            const memberId = document.getElementById("member-select").value;
+            const infoDiv = document.getElementById("member-info");
+
+            // กรณีเป็นบุคคลทั่วไป ไม่มีรหัสสมาชิก
+            if (!memberId) {
+                infoDiv.innerHTML = `
+                    <p>สถานะ: <strong>บุคคลทั่วไป / บุคคลภายนอก (Guest)</strong></p>
+                    <p style="color: gray; margin: 0;">ไม่มีประวัติการยืมในระบบ สามารถสอบถามระเบียบ เวลาทำการ ค่าธรรมเนียมเข้าใช้บริการ หรือค้นหาหนังสือได้ตามปกติ</p>
+                `;
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/member/${memberId}`);
+                if (!res.ok) throw new Error("ไม่พบสมาชิก");
+                const data = await res.json();
+                
+                let booksHtml = "ไม่มีหนังสือที่ยืมอยู่";
+                if (data.borrowed_books && data.borrowed_books.length > 0) {
+                    booksHtml = "<ul>" + data.borrowed_books.map(b => 
+                        `<li>${b.title} (กำหนดส่ง: ${b.due_date} ${b.days_overdue > 0 ? `<b style="color:red;">[เกินกำหนด ${b.days_overdue} วัน]</b>` : ''})</li>`
+                    ).join("") + "</ul>";
+                }
+
+                infoDiv.innerHTML = `
+                    <p>ชื่อ: <strong>${data.name}</strong> (${data.role_th}) | สังกัด: ${data.faculty} | ค่าปรับค้างชำระ: <strong style="color:red;">${data.fine_balance.toFixed(2)} บาท</strong></p>
+                    <p>รายการหนังสือที่ยืมอยู่:</p>
+                    ${booksHtml}
+                `;
+            } catch (err) {
+                infoDiv.textContent = "เกิดข้อผิดพลาดในการโหลดข้อมูลสมาชิก";
+            }
+        }
+
+        // ส่งคำถามไปยัง /api/chat
+        async function sendQuery(e) {
+            e.preventDefault();
+            const input = document.getElementById("query-input");
+            const query = input.value.trim();
+            if (!query) return;
+
+            const memberSelectValue = document.getElementById("member-select").value;
+            const memberId = memberSelectValue ? memberSelectValue : null;
+
+            const submitBtn = document.getElementById("submit-btn");
+            const loadingIndicator = document.getElementById("loading-indicator");
+            const resultBox = document.getElementById("result-box");
+
+            submitBtn.disabled = true;
+            loadingIndicator.style.display = "inline";
+
+            try {
+                const res = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: query, member_id: memberId })
+                });
+
+                if (!res.ok) throw new Error("Server error: " + res.status);
+                const data = await res.json();
+
+                // แสดงผลลัพธ์
+                document.getElementById("tools-used").textContent = data.tools_used.length > 0 ? data.tools_used.join(", ") : "ตอบตรง (ไม่เรียก tool)";
+                document.getElementById("citations-list").textContent = data.citations.length > 0 ? data.citations.join(" | ") : "ไม่มีอ้างอิง";
+                document.getElementById("answer-text").textContent = data.answer;
+                resultBox.style.display = "block";
+            } catch (err) {
+                alert("เกิดข้อผิดพลาด: " + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                loadingIndicator.style.display = "none";
+            }
+        }
+
+        // โหลดข้อมูลสมาชิกครั้งแรก
+        document.addEventListener("DOMContentLoaded", loadMember);
+    </script>
+</body>
+</html>
