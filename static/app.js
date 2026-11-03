@@ -1,27 +1,87 @@
 // LibDesk: Library Service & Regulation Circulation Desk - Client Logic (with SSE Streaming)
 
+// ตัวแปรเก็บสถานะบัญชีสมาชิกปัจจุบัน (เริ่มต้นด้วย Guest)
+let currentMemberId = null;
+
 document.addEventListener("DOMContentLoaded", () => {
-    switchMember();
+    renderGuestCard();
     loadStudyRooms();
+
+    // ปิด Modal เมื่อกดปุ่ม Escape
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeLoginModal();
+        }
+    });
 });
 
-// โหลดข้อมูลสมาชิกเมื่อสลับ Dropdown
-async function switchMember() {
-    const memberId = document.getElementById("member-select").value;
-
-    if (!memberId) {
-        renderGuestCard();
-        return;
+// เปิดหน้าต่าง Modal เข้าสู่ระบบ
+function openLoginModal() {
+    const modal = document.getElementById("login-modal");
+    if (modal) {
+        modal.classList.remove("hidden");
     }
+}
 
+// ปิดหน้าต่าง Modal เข้าสู่ระบบ
+function closeLoginModal() {
+    const modal = document.getElementById("login-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+    }
+}
+
+// ปิด Modal เมื่อคลิกที่พื้นหลังมืด
+function closeLoginModalOnBackdrop(e) {
+    if (e.target.id === "login-modal") {
+        closeLoginModal();
+    }
+}
+
+// เข้าสู่ระบบด้วยบัญชีสมาชิกที่เลือก
+async function loginAs(memberId) {
     try {
         const res = await fetch(`/api/member/${memberId}`);
-        if (!res.ok) throw new Error("ไม่พบข้อมูลสมาชิก");
+        if (!res.ok) throw new Error("ไม่พบข้อมูลสมาชิกในระบบ");
         const data = await res.json();
+
+        currentMemberId = data.member_id;
+
+        // อัปเดตการ์ดข้อมูลผู้ใช้บริการฝั่งซ้าย
         renderMemberCard(data);
+
+        // อัปเดตแถบส่วนหัว (Header) เป็นโหมดสมาชิก
+        const guestState = document.getElementById("guest-header-state");
+        const memberState = document.getElementById("member-header-state");
+        const headerName = document.getElementById("header-user-name");
+        const headerId = document.getElementById("header-user-id");
+
+        if (headerName) headerName.textContent = data.name;
+        if (headerId) headerId.textContent = data.member_id;
+
+        if (guestState) guestState.classList.add("hidden");
+        if (memberState) memberState.classList.remove("hidden");
+
+        // ปิดหน้าต่าง Modal
+        closeLoginModal();
     } catch (err) {
-        console.error("Error loading member:", err);
+        alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
     }
+}
+
+// ออกจากระบบ สลับกลับเป็น Guest Mode
+function logout() {
+    currentMemberId = null;
+
+    // อัปเดตการ์ดข้อมูลฝั่งซ้ายกลับเป็น Guest
+    renderGuestCard();
+
+    // อัปเดตแถบส่วนหัว (Header) เป็นโหมด Guest
+    const guestState = document.getElementById("guest-header-state");
+    const memberState = document.getElementById("member-header-state");
+
+    if (memberState) memberState.classList.add("hidden");
+    if (guestState) guestState.classList.remove("hidden");
 }
 
 // แสดงข้อมูลบุคคลทั่วไป (Guest)
@@ -128,8 +188,7 @@ async function submitQuery(e) {
     const query = input.value.trim();
     if (!query) return;
 
-    const memberSelectVal = document.getElementById("member-select").value;
-    const memberId = memberSelectVal ? memberSelectVal : null;
+    const memberId = currentMemberId;
 
     const submitBtn = document.getElementById("submit-btn");
     const loadingCard = document.getElementById("loading-card");
