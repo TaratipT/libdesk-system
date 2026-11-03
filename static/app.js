@@ -206,12 +206,20 @@ async function submitQuery(e) {
     if (loadingTitle) loadingTitle.textContent = "กำลังสืบค้นข้อบังคับและประมวลผลข้อมูล...";
     resultContainer.classList.add("hidden");
 
+    // แสดงคำถามของผู้ใช้ในการ์ดผลลัพธ์
+    const displayQueryEl = document.getElementById("display-user-query");
+    if (displayQueryEl) {
+        displayQueryEl.textContent = query;
+    }
+
     // ล้างข้อความผลลัพธ์รอบก่อนหน้า
-    answerText.textContent = "";
+    answerText.innerHTML = "";
     processTag.textContent = "ระบบงาน: ศูนย์บริการสารสนเทศทั่วไป";
     citationsList.innerHTML = "";
     actionBox.innerHTML = "";
     actionBox.classList.add("hidden");
+
+    let accumulatedText = "";
 
     try {
         const res = await fetch("/api/chat/stream", {
@@ -257,7 +265,8 @@ async function submitQuery(e) {
                                 loadingCard.classList.add("hidden");
                                 resultContainer.classList.remove("hidden");
                             }
-                            answerText.textContent += payload.content;
+                            accumulatedText += payload.content;
+                            answerText.innerHTML = formatMarkdown(accumulatedText);
                         } else if (payload.type === "metadata") {
                             renderMetadata(payload);
                         }
@@ -277,10 +286,24 @@ async function submitQuery(e) {
     } finally {
         submitBtn.disabled = false;
         loadingCard.classList.add("hidden");
-        if (answerText.textContent.trim()) {
+        if (accumulatedText.trim()) {
             resultContainer.classList.remove("hidden");
         }
     }
+}
+
+// จัดรูปแบบ Markdown เบื้องต้น เช่น ตัวหนา (Bold) และกรอง Emoji ออกเพื่อความเป็นทางการ
+function formatMarkdown(text) {
+    if (!text) return "";
+    let safe = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    // กรอง Emoji ออก เพื่อให้ภาษาเป็นทางการ
+    safe = safe.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '');
+    // Bold **text** -> <strong>text</strong>
+    safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return safe;
 }
 
 // แปลงชื่อ Tool ทางเทคนิคเป็นชื่องานบริการทางการ

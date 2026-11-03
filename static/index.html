@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LibDesk : ระบบแนะนำและตรวจสอบระเบียบการยืม-คืนและทรัพยากรห้องสมุด (Library Resource & Policy System)</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -169,10 +169,10 @@
                                 <div class="result-subtitle">ระบบงาน: ศูนย์บริการสารสนเทศและเคาน์เตอร์บริการยืม-คืน (LibDesk)</div>
                             </div>
                         </div>
-                        <span class="official-tag">พร้อมให้บริการ</span>
+                        <span class="official-tag tag-ready">พร้อมให้บริการ</span>
                     </div>
                     <div class="card-body result-body">
-                        <div class="result-text-content" style="color: var(--text-muted); padding-bottom: 0;">ยินดีต้อนรับสู่ระบบ LibDesk ท่านสามารถเลือกหัวข้อจาก <strong>"คำถามที่พบบ่อย"</strong> หรือพิมพ์ข้อคำถามในกล่องด้านล่าง เพื่อตรวจสอบระเบียบการยืม-คืน ทรัพยากรห้องสมุด ตรวจสอบสถานะการถือครอง หรือคำนวณอัตราค่าปรับส่งคืนเกินกำหนด</div>
+                        <div class="result-text-content welcome-msg">ยินดีต้อนรับสู่ระบบ LibDesk ท่านสามารถเลือกหัวข้อจาก <strong>"คำถามที่พบบ่อย"</strong> หรือพิมพ์ข้อคำถามในกล่องด้านล่าง เพื่อตรวจสอบระเบียบการยืม-คืน ทรัพยากรห้องสมุด ตรวจสอบสถานะการถือครอง หรือคำนวณอัตราค่าปรับส่งคืนเกินกำหนด</div>
                     </div>
                 </section>
 
@@ -194,10 +194,18 @@
                                 <div id="system-process-tag" class="result-subtitle">ระบบงาน: ศูนย์บริการสารสนเทศทั่วไป</div>
                             </div>
                         </div>
-                        <span class="official-tag">สรุปสารสนเทศ</span>
+                        <span class="official-tag tag-summary">สรุปสารสนเทศ</span>
                     </div>
 
                     <div class="card-body result-body">
+                        <!-- แถบแสดงคำถามของผู้ใช้ (User Query) -->
+                        <div class="user-query-container">
+                            <div class="user-query-pill">
+                                <span class="query-prefix-tag">คำถาม:</span>
+                                <span id="display-user-query" class="query-content-text"></span>
+                            </div>
+                        </div>
+
                         <!-- ข้อความสรุปคำตอบ -->
                         <div id="answer-text" class="result-text-content"></div>
 
@@ -230,58 +238,52 @@
             </div>
 
             <!-- 2. ส่วนล่าง: แผงพิมพ์ข้อความแบบแชทและคำถามที่พบบ่อย (Input Console on Bottom) -->
-            <section class="card desk-search-card">
-                <div class="card-header">
-                    <div class="header-title-with-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <section class="desk-input-section">
+                <!-- คำถามที่พบบ่อย (Subtle Quick Topic Chips) -->
+                <div class="quick-topics-section">
+                    <div class="quick-topics-header">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
-                        <h2>เคาน์เตอร์บริการสืบค้นระเบียบและข้อมูลห้องสมุด</h2>
+                        คำถามที่พบบ่อย
+                    </div>
+                    <div class="quick-topics-chips">
+                        <button type="button" class="topic-chip-btn" onclick="setQuery('บุคคลภายนอกเข้าใช้บริการห้องสมุดได้ไหม มีค่าบริการเท่าไร')">ระเบียบเข้าใช้บุคคลภายนอก</button>
+                        <button type="button" class="topic-chip-btn" onclick="setQuery('นักศึกษา ป.ตรี ยืมหนังสือได้กี่เล่มและกี่วัน')">สิทธิการยืมของนักศึกษา ป.ตรี</button>
+                        <button type="button" class="topic-chip-btn" onclick="setQuery('ส่งหนังสือทั่วไปเกินกำหนดส่ง 4 วัน คิดค่าปรับให้หน่อย')">คำนวณค่าปรับส่งคืนล่าช้า</button>
+                        <button type="button" class="topic-chip-btn" onclick="setQuery('ตรวจสอบข้อมูลการยืมและยอดค่าปรับของฉันให้หน่อย')">ตรวจสอบรายการยืมและยอดค่าปรับ</button>
+                        <button type="button" class="topic-chip-btn" onclick="setQuery('หนังสือ Clean Code อยู่ที่ชั้นไหนและยืมได้ไหม')">ค้นหาตำแหน่งหนังสือในคลัง</button>
+                        <button type="button" class="topic-chip-btn" onclick="setQuery('ทำหนังสือห้องสมุดสูญหายต้องชดใช้อย่างไร')">เกณฑ์ชดใช้หนังสือสูญหาย</button>
                     </div>
                 </div>
-                
-                <div class="card-body">
-                    <!-- คำถามที่พบบ่อย (Subtle Quick Topic Chips) -->
-                    <div class="quick-topics-section">
-                        <div class="quick-topics-header">คำถามที่พบบ่อย:</div>
-                        <div class="quick-topics-chips">
-                            <button type="button" class="topic-chip-btn" onclick="setQuery('บุคคลภายนอกเข้าใช้บริการห้องสมุดได้ไหม มีค่าบริการเท่าไร')">ระเบียบเข้าใช้บุคคลภายนอก</button>
-                            <button type="button" class="topic-chip-btn" onclick="setQuery('นักศึกษา ป.ตรี ยืมหนังสือได้กี่เล่มและกี่วัน')">สิทธิการยืมของนักศึกษา ป.ตรี</button>
-                            <button type="button" class="topic-chip-btn" onclick="setQuery('ส่งหนังสือทั่วไปเกินกำหนดส่ง 4 วัน คิดค่าปรับให้หน่อย')">คำนวณค่าปรับส่งคืนล่าช้า</button>
-                            <button type="button" class="topic-chip-btn" onclick="setQuery('ตรวจสอบข้อมูลการยืมและยอดค่าปรับของฉันให้หน่อย')">ตรวจสอบรายการยืมและยอดค่าปรับ</button>
-                            <button type="button" class="topic-chip-btn" onclick="setQuery('หนังสือ Clean Code อยู่ที่ชั้นไหนและยืมได้ไหม')">ค้นหาตำแหน่งหนังสือในคลัง</button>
-                            <button type="button" class="topic-chip-btn" onclick="setQuery('ทำหนังสือห้องสมุดสูญหายต้องชดใช้อย่างไร')">เกณฑ์ชดใช้หนังสือสูญหาย</button>
+
+                <!-- กล่องพิมพ์ข้อความค้นหา (Chat-style Input Box at Bottom) -->
+                <form id="query-form" onsubmit="submitQuery(event)">
+                    <div class="search-box-wrapper">
+                        <div class="search-input-container">
+                            <svg class="search-box-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input 
+                                type="text" 
+                                id="query-input" 
+                                placeholder="พิมพ์คำถาม เช่น 'บุคคลภายนอกเข้าได้ไหม', 'ส่งหนังสือเกิน 4 วัน ค่าปรับเท่าไร'..."
+                                autocomplete="off"
+                                required
+                            />
                         </div>
+                        <button type="submit" id="submit-btn" class="btn-search">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            <span>ส่งคำถาม</span>
+                        </button>
                     </div>
-
-                    <!-- กล่องพิมพ์ข้อความค้นหา (Chat-style Input Box at Bottom) -->
-                    <form id="query-form" onsubmit="submitQuery(event)">
-                        <div class="search-box-wrapper">
-                            <div class="search-input-container">
-                                <svg class="search-box-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                                <input 
-                                    type="text" 
-                                    id="query-input" 
-                                    placeholder="พิมพ์คำถาม เช่น 'บุคคลภายนอกเข้าได้ไหม', 'ส่งหนังสือเกิน 4 วัน ค่าปรับเท่าไร'..."
-                                    autocomplete="off"
-                                    required
-                                />
-                            </div>
-                            <button type="submit" id="submit-btn" class="btn-search">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                                <span>ส่งคำถาม</span>
-                            </button>
-                        </div>
-                    </form>
-
-                </div>
+                </form>
             </section>
 
         </section>
@@ -383,6 +385,6 @@
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=5"></script>
 </body>
 </html>
