@@ -4,7 +4,8 @@ from app.schemas import (
     SearchRegulationsInput,
     LookupMemberInput,
     CalculateOverdueFineInput,
-    SearchBookLocationInput
+    SearchBookLocationInput,
+    CheckStudyRoomsInput
 )
 from app.rag.retriever import retrieve_regulations
 from app.database import get_member, search_catalog, get_all_study_rooms
@@ -74,7 +75,16 @@ def tool_search_book_location(params: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 def tool_check_study_rooms(params: Dict[str, Any]) -> Dict[str, Any]:
+    validated = CheckStudyRoomsInput(**params) if params else CheckStudyRoomsInput()
     rooms = get_all_study_rooms()
+    if validated.room_query:
+        q = validated.room_query.strip().lower()
+        matched = [r for r in rooms if q in r["name"].lower() or q in r["room_id"].lower() or q in r["capacity"].lower()]
+        if matched:
+            return {
+                "total_rooms": len(matched),
+                "rooms": matched
+            }
     return {
         "total_rooms": len(rooms),
         "rooms": rooms
@@ -163,10 +173,15 @@ OPENAI_TOOLS_SPEC = [
         "type": "function",
         "function": {
             "name": "check_study_rooms",
-            "description": "ตรวจสอบสถานะห้องค้นคว้ากลุ่ม",
+            "description": "ตรวจสอบสถานะ ความจุ จำนวนคนที่รองรับ อุปกรณ์ และช่วงเวลาว่างของห้องค้นคว้ากลุ่มและห้องสัมมนากลุ่มทั้งหมด (เมื่อมีคำถามเกี่ยวกับห้องค้นคว้ากลุ่ม ห้องสัมมนา ห้องว่างไหม หรือจุได้กี่คน ให้เรียกฟังก์ชันนี้เสมอ)",
             "parameters": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                    "room_query": {
+                        "type": "string",
+                        "description": "ชื่อ หมายเลขห้อง หรือประเภทห้อง เช่น '201', '301', 'ห้องสัมมนา', 'ขนาดเล็ก', 'ขนาดใหญ่' (หากไม่ระบุจะดึงข้อมูลทุกห้อง)"
+                    }
+                }
             }
         }
     }

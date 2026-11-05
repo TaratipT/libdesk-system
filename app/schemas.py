@@ -19,6 +19,9 @@ class CalculateOverdueFineInput(BaseModel):
 class SearchBookLocationInput(BaseModel):
     query: str = Field(..., description="ชื่อหนังสือ ผู้แต่ง หรือเลขเรียกหนังสือ")
 
+class CheckStudyRoomsInput(BaseModel):
+    room_query: Optional[str] = Field(default=None, description="ชื่อหรือหมายเลขห้องค้นคว้า เช่น '201', '301', 'ขนาดเล็ก', 'ขนาดใหญ่'")
+
 # schemas สำหรับผลลัพธ์ของ agent
 class AgentResponse(BaseModel):
     answer: str
