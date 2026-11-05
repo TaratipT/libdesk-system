@@ -215,6 +215,11 @@ async function submitQuery(e) {
     // ล้างข้อความผลลัพธ์รอบก่อนหน้า
     answerText.innerHTML = "";
     processTag.textContent = "ระบบงาน: ศูนย์บริการสารสนเทศทั่วไป";
+    const statusBadge = document.getElementById("result-status-badge");
+    if (statusBadge) {
+        statusBadge.className = "official-tag tag-summary";
+        statusBadge.textContent = "กำลังประมวลผล...";
+    }
     citationsList.innerHTML = "";
     actionBox.innerHTML = "";
     actionBox.classList.add("hidden");
@@ -323,6 +328,18 @@ function renderMetadata(data) {
     const processTag = document.getElementById("system-process-tag");
     const citationsList = document.getElementById("citations-list");
     const actionBox = document.getElementById("action-data-box");
+    const statusBadge = document.getElementById("result-status-badge");
+
+    // แสดงป้ายเครื่องมือที่เรียกใช้ด้านบนขวา (Dynamic Tool Badge)
+    if (statusBadge) {
+        if (data.tools_used && data.tools_used.length > 0) {
+            statusBadge.className = "official-tag tag-tool-used";
+            statusBadge.innerHTML = `⚙️ เครื่องมือ: ${data.tools_used.join(", ")}`;
+        } else {
+            statusBadge.className = "official-tag tag-no-tool";
+            statusBadge.textContent = "ตอบโดยตรง (Direct Answer)";
+        }
+    }
 
     // แสดงระบบงานที่ประมวลผล
     if (data.tools_used && data.tools_used.length > 0) {
