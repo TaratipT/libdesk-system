@@ -31,7 +31,7 @@ The agent runs an autonomous execution loop with allow-listed tools and two stop
 | `lookup_member` | `member_id: str` | Looks up member profile, active loans, due dates, and fine balances. |
 | `calculate_overdue_fine` | `book_type, days_overdue, hours_overdue` | Calculates fines based on book category and applies the 500 THB cap. |
 | `search_book_location` | `query: str` | Finds call numbers, floor, shelf coordinates, and book availability. |
-| `check_study_rooms` | *(none)* | Returns room capacities and current reservation time slots. |
+| `check_study_rooms` | `room_query: str (optional)` | Returns room capacities, equipment, and current availability status. |
 
 ---
 
@@ -60,7 +60,7 @@ python eval.py
 ## Project Structure
 
 ```text
-RealProject/
+libdesk-system/
 ├── app/
 │   ├── config.py          # Proxy settings and environment loading
 │   ├── database.py        # Local datastores (members, catalog, study rooms)
@@ -70,7 +70,8 @@ RealProject/
 │   │   ├── loop.py        # Agent loop (sync execution and async SSE streaming)
 │   │   └── tools.py       # 5 allow-listed tool definitions
 │   └── rag/
-│       └── retriever.py   # Lexical vector search and citation extractor
+│       ├── retriever.py   # RAG coordinator and citation extractor
+│       └── vector_store.py# TF-IDF index and cosine similarity search
 ├── data/
 │   ├── library_rules.json # 25 library regulations across 11 chapters
 │   ├── eval_set.json      # 30 labeled benchmark queries
@@ -91,8 +92,8 @@ RealProject/
 ### 1. Setup Environment
 ```bash
 # Clone the repository
-git clone <REPOSITORY_URL>
-cd RealProject
+git clone https://github.com/TaratipT/libdesk-system.git
+cd libdesk-system
 
 # Create and activate virtual environment
 python -m venv venv
@@ -119,7 +120,7 @@ cp .env.example .env
 Open `.env` and set your credentials:
 ```env
 OPENAI_API_KEY=your_proxy_key_here
-OPENAI_BASE_URL=https://your-class-proxy-url/v1
+OPENAI_BASE_URL=https://llm.nat-d.uk/v1
 MODEL_NAME=gemma-4-E4B-it
 HOST=127.0.0.1
 PORT=8000
